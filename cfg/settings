@@ -1,0 +1,46 @@
+# defined project name
+PROJECT=metis
+
+# defined version
+VERSION=2.1
+
+# defined Application home
+APPHOME="$(dirname $(dirname $0))"
+
+# defined Application name
+APPNAME=$(basename $0)
+
+# set log file size
+LOGSIZE=51200
+
+# set log file path
+LOGFILE=/data/log/$PROJECT/$PROJECT.log
+
+# defined timed-out(sec)
+TYPEOUT=30
+
+# get real-username & IP
+REALUSR=`who am i | awk '{print $1}'`
+REALIPA=`who am i | awk -F '(' '{print $2}' | awk -F ')' '{print $1}'`
+
+if [ "$REALIPA" = ":0.0" ] 
+then
+    REALIPA="127.0.0.1"
+fi 
+
+# set temp dir 
+if [ -d /dev/shm ] && [ -w /dev/shm ]
+then
+    APPTEMP=/dev/shm/$PROJECT/temp
+else
+    APPTEMP=/tmp/$PROJECT/temp
+fi
+test -d $APPTEMP || mkdir -m 1777 -p $APPTEMP
+
+# defined database
+MYSQL_USER='metis'
+MYSQL_PASS='S3-2ScfnCvAXgsLks'
+MYSQL_HOST='127.0.0.1'
+MYSQL_NAME='metis'
+MYSQL_CONN='/usr/local/bin/mysql'
+MYSQL_EXEC="$MYSQL_CONN -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASS"

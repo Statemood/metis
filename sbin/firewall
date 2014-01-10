@@ -1,0 +1,35 @@
+#! /bin/bash
+
+# ------------------------------------------
+# File: /usr/local/metis/sbin/firewall
+#       root:root, 700
+# Created by rulin,     2013.05.13 16:30
+# Updated by rulin,     2013.05.15 09:10
+#
+# ------------------------------------------
+
+IPTABLES=/sbin/iptables
+
+# init iptables
+$IPTABLES -F
+$IPTABLES -X
+$IPTABLES -P INPUT DROP
+
+# ACCEPT rules
+$IPTABLES -A INPUT -i lo 						                                          -j ACCEPT
+$IPTABLES -A INPUT -m conntrack --ctstate INVALID 			                              -j DROP
+$IPTABLES -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED 		                      -j ACCEPT
+$IPTABLES -A INPUT -p tcp                  --syn -m conntrack --ctstate NEW --dport 7168  -j ACCEPT
+$IPTABLES -A INPUT -p tcp -s 116.226.40.89 --syn -m conntrack --ctstate NEW --dport 25    -j ACCEPT
+$IPTABLES -A INPUT -p tcp -s 116.226.40.89 --syn -m conntrack --ctstate NEW --dport 110   -j ACCEPT
+$IPTABLES -A INPUT -p tcp -s 122.226.73.34 --syn -m conntrack --ctstate NEW --dport 5666  -j ACCEPT
+$IPTABLES -A INPUT -p udp -s 122.226.73.34       -m conntrack --ctstate NEW --dport 161   -j ACCEPT
+$IPTABLES -A INPUT -p tcp -s 10.226.73.26  --syn -m conntrack --ctstate NEW --dport 11211 -j ACCEPT
+$IPTABLES -A INPUT -p tcp -s 10.226.73.28  --syn -m conntrack --ctstate NEW --dport 11211 -j ACCEPT
+$IPTABLES -A INPUT -p tcp -s 10.226.73.30  --syn -m conntrack --ctstate NEW --dport 11211 -j ACCEPT
+
+# Accept Ping
+$IPTABLES -A INPUT -p icmp --icmp-type echo-request 			                          -j ACCEPT
+
+# Saved rules
+service iptables save

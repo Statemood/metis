@@ -1,0 +1,86 @@
+DB_User='metis'
+DB_Pswd='64370000!'
+DB_Host='127.0.0.1'
+DB_Name='metis'
+DB_TLog='logs.application'
+DB_TSrv='metis.server'
+DB_Tool='/usr/local/bin/mysql'
+DB_Conn="$DB_Tool -h $DB_Host -u $DB_User -p$DB_Pswd"
+
+GTINPUTMOUT=30
+
+c0="\e[m"
+c1="\e[1m"
+c2="\e[2m"
+c4="\e[4m"	    # 下划线
+c5="\e[5m"	    # 闪烁
+c7="\e[7m"	    # 反色
+c9="\e[9m"
+
+c30="\e[30m"    # 黑色
+c31="\e[31m"    # 红色
+c32="\e[32m"    # 黄色
+c33="\e[33m"    # 绿色
+c34="\e[34m"    # 蓝色
+c35="\e[35m"    # 粉色
+c36="\e[36m"    
+c37="\e[37m"
+
+c41="\e[41m"
+c42="\e[42m"
+c43="\e[43m"
+c44="\e[44m"
+c45="\e[45m"
+c46="\e[46m"
+c47="\e[47m"
+
+s2j="\033[2J"   # Clear
+s0q="\033[0q"
+s1q="\033[1q"
+s2q="\033[2q"
+s3q="\033[3q"
+
+if [ -d /dev/shm ]
+then
+	if [ ! -d /dev/shm/metis/temp ]
+	then
+		mkdir -m 1777 -p /dev/shm/metis/temp
+		APPSTEMP=/dev/shm/metis/temp
+	else
+		APPSTEMP=/dev/shm/metis/temp
+	fi
+else
+	if [ -d /tmp ]
+	then
+		if [ ! -d /tmp/metis/temp ]
+		then
+			mkdir -m 1777 -p /tmp/metis/temp
+			APPSTEMP=/tmp/metis/temp
+		else
+			APPSTEMP=/tmp/metis/temp
+		fi
+	fi
+fi
+
+if [ -z "$Username" ]
+then
+    Username=`whoami`
+fi 
+
+Realname=`who am i | awk '{print $1}'`
+Useripad=`who am i | awk -F '(' '{print $2}' | awk -F ')' '{print $1}'`
+
+if [ "$Useripad" = ":0.0" ] 
+then
+    Useripad="127.0.0.1"
+fi 
+
+UsersPWD=`pwd`
+Hostname=`hostname`
+Realdate=`date +%Y-%m-%d`
+Realtime=`date +%T.%N`
+   Aself="$(basename $0)"
+   
+cmd_warn="top|ps|tcpdump|parted|fsck|dd|iostat|netstat|iptables|yum"
+cmd_abrt="reboot|poweroff|halt|shutdown|init|rm -[a-zA-Z]+ /|rm [a-zA-Z]+ |rm -[a-zA-Z]+ "
+cmd_cfrm="rm|cp|restart|ln|date"
