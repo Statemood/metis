@@ -1,5 +1,9 @@
 DB_User='metis'
+<<<<<<< HEAD
 DB_Pswd='password'
+=======
+DB_Pswd='64370000!'
+>>>>>>> 2f8aa1e3564721f42fc34adf133e7ab6a6d42cd3
 DB_Host='127.0.0.1'
 DB_Name='metis'
 DB_TLog='logs.application'
