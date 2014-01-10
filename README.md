@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 Project:    metis
 Version:    2.1
 Created:    2012.08
@@ -16,3 +17,9 @@ Project: metis (rebuilding, still dev)
             python
             ssh
         
+=======
+metis-2.1
+=========
+
+A Linux Server Management Platform
+>>>>>>> 857d56b3077f83e003ea8abae74e21fca055b86a
