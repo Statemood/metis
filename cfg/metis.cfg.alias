@@ -1,0 +1,20 @@
+# Alias 
+
+alias       cp='/bin/cp'
+alias       df='/bin/df'
+alias       ln='/bin/ln'
+alias       ls='/bin/ls'
+alias       mv='/bin/mv'
+
+alias       ps='/bin/ps'
+alias       rm='/bin/rm'
+alias      awk='/bin/awk'
+alias      cat='/bin/cat'
+alias      sed='/bin/sed'
+alias      tar='/bin/tar'
+alias     grep='/bin/grep'
+alias     gzip='/bin/gzip'
+alias    egrep='/bin/egrep'
+
+
+alias wc='/usr/bin/wc'

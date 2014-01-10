@@ -1,0 +1,83 @@
+##TAG: fun log begin
+# log level(error|warn|info) msg
+log(){
+    test -z "$LOGFILE" && LOGFILE=$APPHOME/log/$APPNAME.log
+    
+    test -d "$(dirname $LOGFILE)" || mkdir "$(dirname $LOGFILE)"
+    
+    logsize={`du $LOGFILE | awk '{print $1}'`:-0}
+    
+    if [ $LOGSIZE = $logsize ]
+    then
+        mv $LOGFILE $LOGFILE.`date +%F`
+        touch $LOGFILE
+        bzip2 $LOGFILE.`date +%F` > /dev/null 2>&1 &
+    fi
+
+    echo    "`date +'%F %T.%N'` $1 $USER($REALUSR): $2" >> $LOGFILE
+    echo -e "$2"
+}
+
+## load metis:cfg:settings
+## load login from metis:bin:gt
+
+load(){
+    settings="$(dirname $(dirname $0))/cfg/settings"
+
+    if [ -f $settings ]
+    then
+        . $settings
+    else
+        echo -e "\033[1;41mError\033[0m: 'settings' Not Found"
+        exit 1
+    fi
+
+    arg="$@"
+    tmp=`mktemp $APPTEMP/XXXXXXXXXXXXXXXX`
+    echo "$arg" | grep -q ' from '
+    if [ $? = 0 ]
+    then
+        fun=`echo "$arg" | awk -F ' from ' '{print $1}'`
+        tgt=`echo "$arg" | awk -F ' from ' '{print $2}'`
+        
+          f="$(dirname $APPHOME)/`echo $tgt | sed 's/\:/\//g'`"
+
+        if [ -f "$f" ]
+        then
+            if [ -r "$f" ]
+            then
+                grep -q "^$fun(){$" $f
+                if [ $? = 0 ]
+                then
+                    sed -n "/^$fun(){\$/,/^}\$/p" $f > $tmp
+                    . $tmp && rm -rf $tmp
+                else
+                    log error "Cannot load $tgt: Function not defined"
+                    exit 1
+                fi
+            else
+                log error "Cannot load $tgt: Permission Denied"
+                exit 1
+            fi
+        else
+            log error "Cannot load $tgt: File not found"
+            exit 1
+        fi
+    else
+        f="$(dirname $APPHOME)/`echo $arg | sed 's/\:/\//g'`"
+
+        if [ -f "$f" ]
+        then
+            if [ -r "$f" ]
+            then
+                . $f
+            else
+                log error "Cannot load $arg: Permission Denied"
+                exit 1
+            fi
+        else
+            log error "Cannot load $arg: File not found"
+            exit 1
+        fi
+    fi
+}

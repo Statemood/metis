@@ -1,0 +1,73 @@
+通用函数:
+------------
+
+    load            载入函数
+                        load metis:fun:default
+                        载入 metis/fun/default 文件
+                        
+                        load fce from metis:fun:default
+                        从 metis/fun/default 载入 fce 函数
+                        
+
+    log             记录日志
+                        log log-level "log messages"
+                
+    fce             彩色显示字体
+                        fce 1 41 'Hello World'
+                        以粗体红底白字显示 Hello World
+                        
+    ftmp            创建和删除临时文件
+                        ftmp create tmp1 tmp2 ... tmpN
+                        create 后面的参数为要使用的临时文件名
+                        
+                        ftmp delete
+                        
+    
+    check
+        file
+            size
+                    
+            exist
+                    
+            empty
+                    
+            read
+                    
+            write
+                    
+            exec 
+                    
+            owner
+                    
+            date
+                    
+        string
+            digit
+            
+            string
+            
+            alnum
+            
+            alpha
+            
+            ascii
+            
+            upper
+            
+            hexad
+            
+            space
+            
+            lower
+            
+            print
+            
+            cntrl
+            
+            empty
+            
+            range
+            
+            cmd 
+            
+            

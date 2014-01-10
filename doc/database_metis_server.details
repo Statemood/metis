@@ -1,0 +1,32 @@
+数据库metis表server列：
+1   	id
+2   	CTIP 			电信IP
+3	CUIP			联通IP
+4	CMIP			移动IP
+5	NATIP			内网IP
+6	Port			管理端口,如22,3389
+7	Open_Port		主机开放的端口,TCP:22,80,8080
+8	Hostname		
+9	Login_users		允许登录的用户
+10	CPU_Mode		CPU 型号, Intel E5645, 空格分隔限2列
+11	CPU_Rate		CPU 频率, 2.4
+12	CPU_Count		CPU 数量
+13	CPU_Core		CPU 核心数量, 单CPU
+14	CPU_Thread		CPU 线程数量, 单CPU
+15	Mem_Size		单个内存大小
+16	Mem_Count 		内存个数
+17	Disk_Size		单个磁盘大小
+18	Disk_Type		磁盘类型, SAS, SATA
+19	Disk_RPM 		磁盘转速
+20	RAID			RAID
+21	Power_Rated		单个电源功率
+22	Power_Count		电源个数
+23	Product_Mode		主机品牌型号, Dell R410, 空格分隔限2列
+24	Height_U		主机U数
+25	Serial_Number		主机服务代码
+26	Service_Code		主机服务代码
+27	Asset_Number		资产编号
+28	OS			操作系统, CentOS_6.3_x86_64, 空格分隔限1列
+29	Kernel_Version		内核版本, 空格分隔限1列
+30	Location		位置
+31	Description		备注信息

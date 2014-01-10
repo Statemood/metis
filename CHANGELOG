@@ -1,0 +1,19 @@
+
+
+# 2012.12.15
+	切换日志记录到logs.application并增加Hostname列供多个服务器提交日志;
+	logs.application增加字段长度128的usrpwd: 记录用户PWD;
+	logs.application更改字段app为长度128,记录完整app路径;
+	日志记录增加用户PWD目录;
+	gt -i 增加日志记录;
+	删除sbin目录,移动including到bin目录;
+
+# 2013.01.08
+	数据查询增加过滤,无权限的不再显示--root使用-o --include-hidden除外,
+	即使root列出了结果也将会贝拒绝登录;
+	
+# 2013.01.09
+	端口不再显示	
+
+# 2013.02.04 
+    增加输入实时接收
