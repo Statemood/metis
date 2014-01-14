@@ -39,7 +39,7 @@ test -d $APPTEMP || mkdir -m 1777 -p $APPTEMP
 
 # defined database
 MYSQL_USER='metis'
-MYSQL_PASS='S3-2ScfnCvAXgsLks'
+MYSQL_PASS='DHS3SdkSxXvCUggP'
 MYSQL_HOST='127.0.0.1'
 MYSQL_NAME='metis'
 MYSQL_CONN='/usr/local/bin/mysql'

@@ -2,182 +2,69 @@
 
 # ------------------------------------------
 #
-# Created by Statemood, 2012.10.26 11:16
-# Updated by Statemood, 2013.10.25 11:30
+# Created by Statemood, 2014.01.14 17:30
+# Updated by Statemood, 2014.01.14 1800
 #            Statemood@gmail.com
 #
 # Project metis:
-#   http://github.com/Statemood/metis
+#   http://github.com/Statemood/metis-2.1
 # ------------------------------------------
 
 . $(dirname $0)/Load || exit 1
 
-load metis:cfg:db
+load metis:cfg:settings
 load metis:fun:default
-load metis:fun:tmp
 load metis:fun:ge
 load metis:fun:gt
 load metis:fun:check
 
 ftmp create keymatch usr_auth usr_chio mth_auth chk_auth srv_info cmd_temp cmd_list
 
-for argu in "$@"
+for args in "$@"
 do
-    case "$argu" in
-        -i|--info)
-            if [ "$UID" != "0" ]
-            then
-                echo -e  "\033[1;41mError\033[0m: Require root privileges: Permission denied"
-                log auth "Require root privileges: Permission denied (`pwd`:$0 $1 $2)"
-                ftmp delete
-                exit 1
-            fi 
-            ServerIP="$2"
-            gt_mg_exec
-            ftmp delete
-            ;;
-        -U|--user)
-            USER="$2"
-            Check user atusr $USER "Error: only root user can specifiy a user name"
-            shift 2
-            ;;
-        -o|--option)
-            UOPTIONS="$2"
-            log info "Option: $UOPTIONS: User $USER specified"
-            shift 2
-            ;;
-        -s|--specified)
-            Keywords="$2"
-            gt_getsrv
-            shift 2
-            ;;
+    case $arg in
         -c|--cmd)
-            Commands="$2"
-            Check cmd "$Commands"
-            echo     "Execcuting command '$Commands' on server $SERVIPAD"
-            log info "Execcuting command($Commands) on server $SERVIPAD(Keyword: $Keywords)"
-            ssh -p $SERVPORT $USER@$SERVIPAD "$Commands"
+            command="$2"
+            log   info   "$command"
+            check input  "$command"
+            check syntax "$command"
+            check perm   "$command"
+            shift 2
             ;;
-        -u|--upload)
-            Uploadf="$2"
-            Uploads="`echo $3 | awk -F ':' '{print $1}'`"
-            Uploadr="`echo $3 | awk -F ':' '{print $2}'`"
-            Keywords="$Uploads"
-            Check file exist $Uploadf "Error: $Uploadf: No such file or directory"
-            gt_getsrv
-            log info "Start uploading $Uploadf to server $SERVIPAD(matched by $Uploads) save as $Uploadr"
-            echo -e  "Uploading $Uploadf to $SERVIPAD..."
-            scp $OPTION_R -P $SERVPORT $Uploadf $USER@$SERVIPAD:$Uploadr
-            ;;
+
         -d|--download)
-            Dwloadl="$3"
-            Dwloads="`echo $2 | awk -F ':' '{print $1}'`"
-            Dwloadf="`echo $2 | awk -F ':' '{print $2}'`"
-            Keywords="$Dwloads"
-            gt_getsrv
-            log info "Downloading $Dwloadf from $SERVIPAD(matched by $Dwloads) save as $Dwloadl"
-            echo -e  "Downloading $Dwloadf from $SERVIPAD save to $Dwloadl..."
-            scp $OPTION_R -P $SERVPORT $USER@$SERVIPAD:$Dwloadf $Dwloadl
-            ;;
-        -t|--transfer)
-            Dwloadl="$Trantemp"
-            Dwloads="`echo $2 | awk -F ':' '{print $1}'`"
-            Dwloadf="`echo $2 | awk -F ':' '{print $2}'`"
-            Uploadf="$Trantemp/$(basename $Dwloadf)"
-            Uploads="`echo $3 | awk -F ':' '{print $1}'`"
-            Uploadr="`echo $3 | awk -F ':' '{print $2}'`"
-            Keywords="$Dwloads"
-            Check file create 1777 dir $Trantemp
-            echo -e "${FBold}Starting file transfer...${FRest}"
-            gt_getsrv
-			ftmp delete
-            echo -e  "Downloading $Dwloadf from $SERVIPAD..."
-            log info "File transfer: Downloading $Dwloadf from $SERVIPAD(matched by $Dwloads) save as $Uploadf"
-            scp $OPTION_R -P $SERVPORT $USER@$SERVIPAD:$Dwloadf $Dwloadl
-            Keywords="$Uploads"
-            Check file exist $Uploadf "Error: $Uploadf: No such file or directory"
-            gt_getsrv
-			ftmp delete
-            echo -e  "Uploading $Uploadf to $SERVIPAD..."
-            log info "File transfer: Uploading $Uploadf to $SERVIPAD(matched by $Uploads) save as $Uploadr"
-            scp $OPTION_R -P $SERVPORT $Uploadf $USER@$SERVIPAD:$Uploadr
-            Del_file $Uploadf
-            ;;
+            check input  "$2"
+            server=`echo "$2" | awk -F ':' '{print $1}'`
+            source=`echo "$2" | awk -F ':' '{print $2}'`
+            saveto="$3"
+
+            check 
+            check exist  $saveto
+            
+
+        -f|--file)
+        -g|--group)
+        -i|--info)
         -l|--list)
-            trap "clean" INT
-            Keywords="$2"
-            gt_db_search
-            Check file empty $keymatch "Error: No results found"
-            gt_print_results
-            python -c "print '-' * 30"
-            Rangenum="`cat $keymatch | sed '1d' | wc -l`"
-            if [ "$Rangenum" = 1 ]
-            then
-                usr_input=1
-                gt_srvinfo
-                ftmp delete
-                log info "Search $Keywords(ID $usr_input of $Rangenum: auto-identified) matched server:$SERVIPAD:$SERVPORT:$SERVNAME, auto-logging"
-                echo "$Keywords matched $SERVIPAD, auto connecting..."
-                ssh -p $SERVPORT $USER@$SERVIPAD
-                exit 0
-            fi 
-            echo -en  "$USER@$PROJECT: "
-            ifs=$IFS
-            IFS=
-            while true
-            do
-                USRINPUT="`RTInput`"
-                if [ x$USRINPUT = x ]
-                then
-                    echo
-                    break
-                fi
-                INPUTSTRING="$INPUTSTRING$USRINPUT"
-                printf "$USRINPUT"
-                if [ $USRINPUT = q ]
-                then
-                    echo -e "\nGoodbye!"
-                    ftmp delete
-                    exit 0
-                elif [ $USRINPUT = c ]
-                then
-                    echo -en "\n${c1}Command mode${c0}: "
-                    Readinput $GTINPUTMOUT Commands "timed out waiting for input: program terminated"
-                    Check input empty "$Commands" "Error: No input detected"
-                    Check cmd "$Commands"
-                    sed '1d' $keymatch > $cmd_list
-                    echo -e "Attention: Command `fce 1 44 $Commands` will be execute on `wc -l $cmd_list | awk '{print $1}'` servers\n"
-                    Count=1
-                    while read line 
-                    do 
-                        echo "$line" > $cmd_temp
-                        usr_input=`echo $line | awk '{print $1}'`
-                        keymatch=$cmd_temp
-                        gt_srvinfo
-			            ssh -p $SERVPORT $USER@$SERVIPAD "$Commands" &
-                        Count=`expr $Count + 1`
-                    done < $cmd_list
-                    ftmp delete
-                    exit 0
-                    break
-                else 
-                    check digit "$USRINPUT" 1 exit 1 "\nError: Please input ID or c to Command mode or q to quit"
-                fi 
-            done
-            IFS=$ifs
-            usr_input=$INPUTSTRING
-            Check input empty   "$usr_input"           "Error: No input detected"
-            check digit         "$usr_input" 1 exit 1  "Error: Number only"
-            Check input range   "$usr_input" $Rangenum "Error: Input out of range. Total: $Rangenum, Input: $usr_input"
-            gt_srvinfo
-            ftmp delete
-	        echo -e "\n${FBold}Connecting to \033[34m$SERVIPAD\033[0m($SERVNAME)..."
-	        log info "Search $Keywords(ID $usr_input of $Rangenum: user-input) matched server:$SERVIPAD:$SERVPORT:$SERVNAME, logging"
-            ssh -p $SERVPORT $USER@$SERVIPAD
+        -L|--login
+        -o|--option)
+        -s|--search)
+        -S|--server)
+        -t|--transmission)
+        -u|--upload)
+        -v|--version)
+        --user)
+        --host)
+        --port)
+        --edit)
+        --add)
+        --del)
+            
+        --log)
+            msg log gt
             ;;
-        -h|--help)
-            echo "help msg"
-            ftmp delete
+        --help)
+            msg help gt
             ;;
-    esac 
+    esac
 done

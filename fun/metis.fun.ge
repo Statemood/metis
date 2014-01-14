@@ -27,7 +27,7 @@ Readinput(){
 db_exec(){
     if [ ! -z "$1" ]
     then
-        $DB_Conn -e "$1" 2> /dev/null
+        $MYSQL_EXEC -e "$1" 2> /dev/null
     else
         echo -e "\033[1;31mError\033[0m: db_exec: require argument"
         return 1
