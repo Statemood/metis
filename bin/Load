@@ -1,6 +1,5 @@
-##TAG: fun log begin
-# log level(error|warn|info) msg
 log(){
+	# log level(error|warn|info) msg
     test -z "$LOGFILE" && LOGFILE=$APPHOME/log/$APPNAME.log
     
     test -d "$(dirname $LOGFILE)" || mkdir "$(dirname $LOGFILE)"
@@ -14,14 +13,14 @@ log(){
         bzip2 $LOGFILE.`date +%F` > /dev/null 2>&1 &
     fi
 
-    echo    "`date +'%F %T.%N'` $1 $USER($REALUSR): $2" >> $LOGFILE
+    echo    "`date +'%F %T.%N'` $1 $USER($REALUSER:$REALTTYS:$REALIPAD): $2" >> $LOGFILE
     echo -e "$2"
 }
 
-## load metis:cfg:settings
-## load login from metis:bin:gt
-
 load(){
+	## load metis:cfg:settings
+	## load login from metis:bin:gt
+	
     settings="$(dirname $(dirname $0))/cfg/settings"
 
     if [ -f $settings ]

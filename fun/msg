@@ -1,0 +1,11 @@
+#! /bin/bash
+
+case $1 in
+	help)
+		check file "$file_help_$2"
+		echo "$help_$2"
+		;;
+	version)
+		echo "$VERSION"
+		;;
+esac

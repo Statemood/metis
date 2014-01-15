@@ -1,3 +1,4 @@
+#! /bin/bash
 # defined project name
 PROJECT=metis
 
@@ -17,23 +18,24 @@ LOGSIZE=51200
 LOGFILE=/data/log/$PROJECT/$PROJECT.log
 
 # defined timed-out(sec)
-TYPEOUT=30
+TIMEOUT=30
 
 # get real-username & IP
-REALUSR=`who am i | awk '{print $1}'`
-REALIPA=`who am i | awk -F '(' '{print $2}' | awk -F ')' '{print $1}'`
+REALUSER=`who am i | awk '{print $1}'`
+REALTTYS=`who am i | awk '{print $2}'`
+REALIPAD=`who am i | awk -F '(' '{print $2}' | awk -F ')' '{print $1}'`
 
-if [ "$REALIPA" = ":0.0" ] 
+if [ "$REALIPAD" = ":0.0" ] || [ "$REALIPAD" = ":0" ]
 then
-    REALIPA="127.0.0.1"
+    REALIPAD="127.0.0.1"
 fi 
 
 # set temp dir 
 if [ -d /dev/shm ] && [ -w /dev/shm ]
 then
-    APPTEMP=/dev/shm/$PROJECT/temp
+    APPTEMP=/dev/shm/$PROJECT
 else
-    APPTEMP=/tmp/$PROJECT/temp
+    APPTEMP=/tmp/$PROJECT
 fi
 test -d $APPTEMP || mkdir -m 1777 -p $APPTEMP
 

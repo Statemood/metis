@@ -3,68 +3,137 @@
 # ------------------------------------------
 #
 # Created by Statemood, 2014.01.14 17:30
-# Updated by Statemood, 2014.01.14 1800
+# Updated by Statemood, 2014.01.15 18:00
 #            Statemood@gmail.com
 #
 # Project metis:
 #   http://github.com/Statemood/metis-2.1
 # ------------------------------------------
 
+# metis send 	cmd 	"ls" to server ipaddress
+# 							 	group  groupname
+#			 	file "file" ^^^^^^^^^^^^^^^^^^^
+#
+#		get  	file "file" from server ipaddress
+#
+#		info 	ipaddress
+#
+#		list 	keyword(default display all)
+#			 	group	groupname, group by xxx
+#			 	server ip,hostname,description,
+#
+#		login	server-keyword: ip,hostname,alias
+#
 . $(dirname $0)/Load || exit 1
 
 load metis:cfg:settings
 load metis:fun:default
-load metis:fun:ge
-load metis:fun:gt
+load metis:fun:db
 load metis:fun:check
-
-ftmp create keymatch usr_auth usr_chio mth_auth chk_auth srv_info cmd_temp cmd_list
 
 for args in "$@"
 do
     case $arg in
-        -c|--cmd)
+        cmd|command)
             command="$2"
-            log   info   "$command"
-            check input  "$command"
-            check syntax "$command"
-            check perm   "$command"
+            log   info    "$command"
+            check input   "$command"
+            check syntax  "$command"
+            check command "$command"
+            check perm    "$command"
             shift 2
             ;;
-
-        -d|--download)
+        get)
+	        # get remote-file from server 10.1 save to local-path
+	        
             check input  "$2"
             server=`echo "$2" | awk -F ':' '{print $1}'`
             source=`echo "$2" | awk -F ':' '{print $2}'`
             saveto="$3"
-
-            check 
             check exist  $saveto
-            
-
-        -f|--file)
-        -g|--group)
-        -i|--info)
-        -l|--list)
-        -L|--login
-        -o|--option)
-        -s|--search)
-        -S|--server)
-        -t|--transmission)
-        -u|--upload)
-        -v|--version)
-        --user)
-        --host)
-        --port)
-        --edit)
-        --add)
-        --del)
-            
-        --log)
-            msg log gt
+            shift 
             ;;
-        --help)
-            msg help gt
+        send)
+	        # send file local-file to server 10.1
+			#					   to group  dbs
+	        # send cmd  "ls" 	   to server 10.1
+	        #					   to group  dbs
+	        
+	        check input  "$2"
+	        check input  "$2" accept "file|cmd"
+	        shift
+	        ;;
+        file)
+	        check input  "$2"
+	        check exist	 "$2"
+	        check read	 "$2" # upload
+	        check write	 "$2" # get 
+	        shift
+	        ;;
+        group)
+	        check   input "$2"
+	        db get  group "$2"
+		    connect group "$server_list" "$action"
+		    shift
+	        ;;
+	    by)
+		    # group by xxx
+		    check input "$2"
+		    group_by="$2"
+		    shift
+		    ;;
+	    server)
+			check input    "$2"
+			db get server  "$2" 
+			connect server "$server_list" "$action"
+			shift
+			;;
+        info|information)
+	        # info ip-address
+	        
+	        check input  "$2"
+		    check perm	 "$2"
+		    db get info	 "$2"
+		    Print info   "$db_result" 
+		    ;;
+        list|search)
+	        check input  "$2"
+	        db get list  "$2"
+	        check empty  "$db_result"
+	        Print list   "$db_result"
+	        input rt 	 "userinput"
+	        ;;
+        login)
+	        check input	   "$2"
+	        db get server  "$2"
+	        connect server "$server_login"
+	        ;;
+        option)
+	        check input  "$2"
+	        check option "$2"
+	        shift
+	        ;;
+        transfer|transmission)
+	        # transfer 10.1:/path 10.2:/path
+	        # transfer file /path from 10.1 to /path on 10.2
+	        check input    "$2"
+	        check argu 2   "$2"
+	        source_host=
+	        source_file=
+	        destsv_host=
+	        destsv_file=
+	        db get server  "$source_host"
+	        db get server  "$destsv_host"
+	        transmission $source_file from $source_host to $destsv_file on $destsv_host
+	        ;;
+	    version)
+		    msg version metis
             ;;
+        help)
+            msg help metis
+            ;;
+        *)
+	        msg usage metis
+	        ;;
     esac
 done
