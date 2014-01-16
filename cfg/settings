@@ -46,3 +46,7 @@ MYSQL_HOST='127.0.0.1'
 MYSQL_NAME='metis'
 MYSQL_CONN='/usr/local/bin/mysql'
 MYSQL_EXEC="$MYSQL_CONN -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASS"
+
+
+# Funtion: Check settings
+CHK_ACCEPT_TYPE=""

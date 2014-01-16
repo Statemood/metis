@@ -35,3 +35,8 @@ ftmp(){
             ;;
     esac
 }
+
+abort(){
+    ftmp delete
+    exit 1
+}
