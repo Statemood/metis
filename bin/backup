@@ -11,26 +11,15 @@
 
 # Generic Backup program for Linux
 
-Version=0.1
-Program=$(basename $0)
-Baksave=/data/backup
-Rootdir=/data/www
-Tempdir=/dev/shm/temp
-Saveday=15
-Tmpfile=`mktemp $Tempdir/XXXXXXXXXXXXXXXXXXXX`
-Logfile=/data/log/backup/${Program}_`date +%Y-%m`.log
+. $(dirname $(dirname $0))/fun/load || exit 1
 
-log(){
-    test -d "$(dirname $Logfile)" || mkdir -p $(dirname $Logfile)
-    
-    echo -e "`date +%F` `date +%T` $Program.$Service:$1: $2" >> $Logfile
-}
+load metis:cfg:settings
+load metis:fun:generic
+load metis:fun:check
+load metis:fun:nginx
+load metis:fun:backup
 
-if [ $UID != 0 ]
-then
-    echo -e "Error: root only"
-    exit 1
-fi 
+check user "root"
 
 for arg in "$@"
 do
