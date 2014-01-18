@@ -31,6 +31,9 @@ load metis:fun:default
 load metis:fun:db
 load metis:fun:check
 
+check range time work
+check login
+
 for args in "$@"
 do
     case $args in

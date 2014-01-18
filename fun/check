@@ -2,28 +2,29 @@
 
 # check
 
+check_arg(){
+    if [ "X$1" = "X" ]
+    then
+        log error "Error: $check_arg: $2"
+        abort
+    fi
+} 
+
 check(){
-    for check_arg in "$@"
+    for chkarg in "$@"
     do
-        case "$check_arg" in 
+        case "$chkarg" in 
             input)
-                chk_input="$2"
-                if [ "X$chk_input" = "X" ]
-                then
-                    log  error "Error: No input detected"
-                    abort
-                fi
+                check_arg "$2" "No input detected"
                 shift 2
                 ;;
             #syntax)
+            #login)
+                # login
+            #    ;;
             accept)
-                chk_accept="$2"
-                if [ "X$chk_accept" = "X" ]
-                then
-                    log error "Error: Accept type not defined"
-                    abort
-                fi
-                echo "$chk_input" | egrep -q "$chk_accept"
+                check_arg "$2" "Accept type not defined"
+                echo "$2" | egrep -q "$chk_accept"
                 if [ "$?" != 0 ]
                 then
                     log error "Error: Accept type not support"
@@ -34,14 +35,24 @@ check(){
             #perm)
             #option)
             read)
+                check_arg "$2" "Require argument"
+                ;;    
             write)
             file)
             dir)
             exist)
+                if [ ! -e "$2" ]
+                then
+                    log error "Error: $2: does not exist"
+                    abort
+                fi
+                ;; 
             empty)
+                
             pipe)
             socket)
             size)
+            type)
         esac
     done
 }
