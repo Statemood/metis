@@ -76,11 +76,11 @@ do
         group)
 	        check   input "$2"
 	        db get  group "$2"
-		    connect group "$server_list" "$action"
-		    shift
+		connect group "$server_list" "$action"
+		shift
 	        ;;
-	    by)
-		    # group by xxx
+	by)
+		# group by xxx
 		    check input "$2"
 		    group_by="$2"
 		    shift
