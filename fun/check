@@ -53,6 +53,8 @@ check(){
             socket)
             size)
             type)
+            sql)
+            
         esac
     done
 }

@@ -108,6 +108,16 @@ do
             ;;
         except)
             ;;
+        ip)
+            ;;
+        hostname)
+            ;;
+        alias)
+            ;;
+        desc)
+            ;;
+        like)
+            ;;
         list)
             ;;    
         search)
@@ -116,6 +126,8 @@ do
 	        Print list   "$db_result"
 	        input rt 	 "userinput"
 	        ;;
+        find)
+            ;;
         login)
 	        check   input  "$2"
 	        db  get server "$2"
@@ -139,12 +151,29 @@ do
 	        db get server  "$destsv_host"
 	        transmission $source_file from $source_host to $destsv_file on $destsv_host
 	        ;;
+        id)
+            ;;
+        clean)
+            ;;
+        test)
+            ;;
+        load)
+            ;;
+        set)
+            ;;
+        admin)
+            ;;
         status)
             ;;
         start)
             ;;
         stop)
             ;;
+        restart)
+            ;;
+        reload)
+            ;;
+        
 	    version)
 		    msg version metis
             ;;
