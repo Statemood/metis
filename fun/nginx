@@ -1,8 +1,6 @@
 #! /bin/bash
 
-# nginx config finder
-
-app_ngx_root_dir_by_defined(){
+ngx_root_dir_by_defined(){
     check read $Ngxconf
 
     for ngx_root_dir in `grep '^ * root ' $Ngxconf | awk '{print $2}' | awk -F ';' '{print $1}'`
@@ -15,6 +13,13 @@ app_ngx_root_dir_by_defined(){
         ngx_root_dir=`grep '^ * root ' $(dirname $Ngxconf)/$ngx_cnf_inc | awk -F 'root ' '{print $2}' | awk -F ';' '{print $1}'`
         test -d $ngx_root_dir && echo $ngx_root_dir
     done
-} 
+}
 
+ngx_root_dir_by_list(){
+    check read $Nginx_root_dir_list
 
+    while read line
+    do
+        test -d "$line" && echo "$line"
+    done < $Nginx_root_dir_list
+}

@@ -47,6 +47,5 @@ MYSQL_NAME='metis'
 MYSQL_CONN='/usr/local/bin/mysql'
 MYSQL_EXEC="$MYSQL_CONN -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASS"
 
-
-# Funtion: Check settings
-CHK_ACCEPT_TYPE=""
+# Backup settings
+Nginx_root_dir_list=$APPHOME/cfg/nginx_root_dir_list
