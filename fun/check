@@ -16,6 +16,7 @@ check(){
         case "$chkarg" in 
             input)
                 check_arg "$2" "No input detected"
+                abort
                 shift 2
                 ;;
             #syntax)
@@ -37,9 +38,9 @@ check(){
             read)
                 check_arg "$2" "Require argument"
                 ;;    
-            write)
-            file)
-            dir)
+            write);;
+            file);;
+            dir);;
             exist)
                 if [ ! -e "$2" ]
                 then
@@ -47,13 +48,13 @@ check(){
                     abort
                 fi
                 ;; 
-            empty)
+            empty);;
                 
-            pipe)
-            socket)
-            size)
-            type)
-            sql)
+            pipe);;
+            socket);;
+            size);;
+            type);;
+            sql);;
             
         esac
     done
