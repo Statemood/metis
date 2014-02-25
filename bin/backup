@@ -16,7 +16,6 @@
 load metis:cfg:settings
 load metis:fun:generic
 load metis:fun:check
-load metis:fun:nginx
 load metis:fun:backup
 
 check user "root"
