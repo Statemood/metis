@@ -5,6 +5,5 @@ Project: metis (rebuilding, still dev)
 
         程序依赖以下程序或组件:
             mysql
-            python
             ssh
         

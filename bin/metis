@@ -3,7 +3,7 @@
 # ------------------------------------------
 #
 # Created by Statemood, 2014.01.14 17:30
-# Updated by Statemood, 2014.01.15 18:00
+# Updated by Statemood, 2014.01.18 15:30
 #            Statemood@gmail.com
 #
 # Project metis:
@@ -28,20 +28,23 @@
 
 load metis:cfg:settings
 load metis:fun:default
-load metis:fun:db
+#load metis:fun:db
 load metis:fun:check
+
+#check range time work
+#check login
 
 for args in "$@"
 do
     case $args in
-        cmd|command)
+        cmd)
             command="$2"
             log   info    "$command"
             check input   "$command"
             check syntax  "$command"
             check command "$command"
             check perm    "$command"
-            shift 2
+            shift 1
             ;;
         get)
 	        # get remote-file from server 10.1 save to local-path
@@ -59,17 +62,22 @@ do
 	        # send cmd  "ls" 	   to server 10.1
 	        #					   to group  dbs
 	        
-	        check input  "$2"
-	        check input  "$2" accept "^file$|^cmd$"
+	        #check input  "$2"
+	        #check input  "$2" accept "^file$|^cmd$"
 	        shift 
 	        ;;
-        file)
-	        check input  "$2"
-	        check exist	 "$2"
-	        check read	 "$2" # upload
-	        check write	 "$2" # get 
-	        shift
-	        ;;
+        to)
+            echo "To:$2"
+            shift 1
+            ;;
+#        file)
+#	        check input  "$2"
+#	        check exist	 "$2"
+#	        check read	 "$2" # upload
+#	        check write	 "$2" # get 
+#	        shift
+#	        ;;
+
         group)
 	        check   input "$2"
 	        db get  group "$2"
@@ -82,13 +90,19 @@ do
 		    group_by="$2"
 		    shift
 		    ;;
+        #to)
+            
+        #    ;;
+        #all)
+        #    ;;
+        
 	    server)
 			check input    "$2"
 			db get server  "$2" 
 			connect server "$server_list" "$action"
 			shift
 			;;
-        info|information)
+        info)
 	        # info ip-address
 	        
 	        check input  "$2"
@@ -96,16 +110,33 @@ do
 		    db get info	 "$2"
 		    Print info   "$db_result" 
 		    ;;
-        list|search)
+        #filiter)
+        #    ;;
+        #except)
+        #    ;;
+        #ip)
+        #    ;;
+        #hostname)
+        #    ;;
+        #alias)
+        #    ;;
+        #desc)
+        #    ;;
+        #like)
+        #    ;;
+        #list)
+        #    ;;    
+        search)
 	        check input  "$2"
-	        db get list  "$2"
 	        check empty  "$db_result"
 	        Print list   "$db_result"
 	        input rt 	 "userinput"
 	        ;;
+        #find)
+        #    ;;
         login)
-	        check input	   "$2"
-	        db get server  "$2"
+	        check   input  "$2"
+	        db  get server "$2"
 	        connect server "$server_login"
 	        ;;
         option)
@@ -113,11 +144,11 @@ do
 	        check option "$2"
 	        shift
 	        ;;
-        transfer|transmission)
+        transfer)
 	        # transfer 10.1:/path 10.2:/path
 	        # transfer file /path from 10.1 to /path on 10.2
 	        check input    "$2"
-	        check argu 2   "$2"
+	        check arg  2   "$2"
 	        source_host=
 	        source_file=
 	        destsv_host=
@@ -126,14 +157,37 @@ do
 	        db get server  "$destsv_host"
 	        transmission $source_file from $source_host to $destsv_file on $destsv_host
 	        ;;
+        #id)
+        #    ;;
+        #clean)
+        #    ;;
+        #test)
+        #    ;;
+        #load)
+        #    ;;
+        #set)
+        #    ;;
+        #admin)
+        #    ;;
+        #status)
+        #    ;;
+        #start)
+        #    ;;
+        #stop)
+        #    ;;
+        #restart)
+        #    ;;
+        #reload)
+        #    ;;
+        
 	    version)
 		    msg version metis
             ;;
         help)
             msg help metis
             ;;
-        *)
-	        msg usage metis
-	        ;;
+        #*)
+	    #    msg usage metis
+	    #    ;;
     esac
 done
