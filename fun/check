@@ -2,44 +2,58 @@
 
 # check
 # common check
-check_arg(){
-    if [ "X$1" = "X" ]
-    then
-        log error "Error: $check_arg: $2"
-        abort
-    fi
-} 
 
 check(){
     for chkarg in "$@"
     do
         case "$chkarg" in 
             input)
-                check_arg "$2" "No input detected"
-                abort
-                shift 2
+                if [ "X$2" = "X" ]
+                then
+                    log error "Error: No inout detected"
+                    abort
+                else
+                    return 0
+                fi
                 ;;
             #syntax)
             #login)
                 # login
             #    ;;
             accept)
-                check_arg "$2" "Accept type not defined"
-                echo "$2" | egrep -q "$chk_accept"
+                echo "$2" | egrep -q "$3"
                 if [ "$?" != 0 ]
                 then
-                    log error "Error: Accept type not support"
+                    log error "Error: Unsupported type"
+                    abort
+                else
+                    return 0
+                fi
+                ;;
+            command)
+                command="$2"
+                ;;
+            #perm)
+            #option)
+            file)
+                if [ -e "$2" ]
+                then
+                    if [ ! -f "$2" ]
+                    then
+                        log error "Error: $2: Not a regular file"
+                        abort
+                    fi
+                    if [ ! -r "$2" ]
+                    then
+                        log error "Error: $2: Permission denied"
+                        abort
+                    fi
+                    return 0
+                else
+                    log error "Error: $2: File not found"
                     abort
                 fi
                 ;;
-            #command)
-            #perm)
-            #option)
-            read)
-                check_arg "$2" "Require argument"
-                ;;    
-            write);;
-            file);;
             dir);;
             exist)
                 if [ ! -e "$2" ]
@@ -55,7 +69,6 @@ check(){
             size);;
             type);;
             sql);;
-            
         esac
     done
 }

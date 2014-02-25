@@ -49,3 +49,4 @@ MYSQL_EXEC="$MYSQL_CONN -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASS"
 
 # Backup settings
 Nginx_root_dir_list=$APPHOME/cfg/nginx_root_dir_list
+

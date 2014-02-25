@@ -1,3 +1,21 @@
+#! /bin/bash
+
 abort(){
-    exit
+    exit 1
+}
+
+fun_server(){
+    check input   "$1"
+    #db get server "$1"
+    SERVPORT="22"
+    SERVIPAD="192.168.1.123"
+    SERVPATH="`echo $1 | awk -F ':' '{print $2}'`"
+    #echo "scp -P $SERVPORT $filename $SERVIPAD:$SERVPATH"
+    if [ "$Sendaction" = "file" ]
+    then
+        SERVPATH="`echo $1 | awk -F ':' '{print $2}'`"
+        echo -e "Sending file '$filename' to $SERVIPAD saved to $SERVPATH"
+    else
+        echo -e "Sending cmd '$Commands' to $SERVIPAD"
+    fi
 }
