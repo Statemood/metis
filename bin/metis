@@ -29,6 +29,7 @@
 load metis:cfg:settings
 load metis:fun:default
 load metis:fun:check
+load metis:fun:db
 
 #check range time work
 #check login
@@ -36,12 +37,18 @@ load metis:fun:check
 for args in "$@"
 do
     case $args in
+        but)
+            # test
+            ;;
         cmd)
             Commands="$2"
             check input   "$Commands"
             #check syntax  "$command"
             #check command "$command"
             shift 1
+            ;;
+        except)
+            # test
             ;;
         file)
             filename="$2"
@@ -78,6 +85,7 @@ do
             else
                 fun_server "$totarget"
             fi
+            shift 2
             ;;
         group)
 	        check   input "$2"
@@ -92,18 +100,19 @@ do
 		    shift
 		    ;;
         server)
-			check input    "$2"
-			db get server  "$2" 
-			connect server "$server_list" "$action"
+            Keywords="$2"
+			check input "$Keywords"
+			db    get   "$Keywords" 
+			#connect server "$server_list" "$action"
 			shift
 			;;
         info)
 	        # info ip-address
 	        
-	        check input  "$2"
-		    check perm	 "$2"
-		    db get info	 "$2"
-		    Print info   "$db_result" 
+	        check input "$2"
+		    check perm  "$2"
+		    db info     "$2"
+		    Print info  "$db_result" 
 		    ;;
         search)
 	        check input  "$2"
@@ -112,8 +121,8 @@ do
 	        input rt 	 "userinput"
 	        ;;
         login)
-	        check   input  "$2"
-	        db  get server "$2"
+	        check input  "$2"
+	        db    get    "$2"
 	        connect server "$server_login"
 	        ;;
         option)
@@ -124,14 +133,14 @@ do
         transfer)
 	        # transfer 10.1:/path 10.2:/path
 	        # transfer file /path from 10.1 to /path on 10.2
-	        check input    "$2"
-	        check arg  2   "$2"
+	        check input   "$2"
+	        check arg   2 "$2"
 	        source_host=
 	        source_file=
 	        destsv_host=
 	        destsv_file=
-	        db get server  "$source_host"
-	        db get server  "$destsv_host"
+	        db get server "$source_host"
+	        db get server "$destsv_host"
 	        transmission $source_file from $source_host to $destsv_file on $destsv_host
 	        ;;        
 	    version)

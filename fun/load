@@ -1,17 +1,18 @@
+#! /bin/bash
 log(){
 	# log level(error|warn|info) msg
     test -z "$LOGFILE" && LOGFILE=$APPHOME/log/$APPNAME.log
     
     test -d "$(dirname $LOGFILE)" || mkdir "$(dirname $LOGFILE)"
     
-    logsize={`du $LOGFILE | awk '{print $1}'`:-0}
+#    logsize={`du $LOGFILE | awk '{print $1}'`:-0}
     
-    if [ $LOGSIZE = $logsize ]
-    then
-        mv $LOGFILE $LOGFILE.`date +%F`
-        touch $LOGFILE
-        bzip2 $LOGFILE.`date +%F` > /dev/null 2>&1 &
-    fi
+#    if [ $LOGSIZE = $logsize ]
+#    then
+#        mv $LOGFILE $LOGFILE.`date +%F`
+#        touch $LOGFILE
+#        bzip2 $LOGFILE.`date +%F` > /dev/null 2>&1 &
+#    fi
 
     echo    "`date +'%F %T.%N'` $1 $USER($REALUSER:$REALTTYS:$REALIPAD): $2" >> $LOGFILE
     echo -e "$2"

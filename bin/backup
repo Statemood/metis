@@ -11,30 +11,21 @@
 
 # Generic Backup program for Linux
 
-. $(dirname $(dirname $0))/fun/load || exit 1
-
-load metis:cfg:settings
-load metis:fun:generic
-load metis:fun:check
-load metis:fun:backup
-
-check user "root"
+Rootdir="/data/www"
+Project=""
 
 for arg in "$@"
 do
     case $arg in
         mongo)
-            # 指定类型为MongoDB
             Service="mongo"
             shift
             ;;
         mysql)
-            # 指定类型为MySQL
             Service="mysql"
             shift
             ;;   
         web)
-            # 指定类型为web
             Service="web"
             Project="$2"
             Package=${Project}_`date +%F_%H.%M.%S`.tar.gz
@@ -49,22 +40,18 @@ do
             shift 2
             ;;
         name)
-            # 用于指定单个备份目标
             Targets="$2"
             shift
             ;;
         all)
-            # 功能根据前一参数对应调整
             IsAll="0"
             shift
             ;;
         diff)
-            # 差异备份(当前仅限web功能使用)
             Diffence="$2"
             shift
             ;;
         file)
-            # 从一个文件读取备份目标, 使用rsync(当前仅限web功能使用)
             # backup web Project file flie-list
             Listfile="$2"
             
@@ -91,7 +78,6 @@ do
             shift 2
             ;;
         full)
-            # 完全备份
             # backup web project full
             log full "Start completely backup $Rootdir"
             cp -rf   $Rootdir $Tempdir
@@ -117,16 +103,12 @@ do
             fi
             ;;
         last)
-            # 显示最后一次备份信息
-            
             
             ;;
         list)
-            # 显示指定类型目标列表
         
             ;;
         log)
-            # 显示相关日志
             if [ "$2" = "print-log-file" ]
             then
                 echo "$Logfile"
