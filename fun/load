@@ -4,8 +4,13 @@ log(){
     
     test -d "$(dirname $LOGFILE)" || mkdir "$(dirname $LOGFILE)"
     
-    logsize={`du $LOGFILE | awk '{print $1}'`:-0}
-    
+    if [ -f $LOGFILE ]
+    then
+        logsize=`du $LOGFILE | awk '{print $1}'`
+    else
+        logsize=0
+    fi
+
     if [ $LOGSIZE = $logsize ]
     then
         mv $LOGFILE $LOGFILE.`date +%F`

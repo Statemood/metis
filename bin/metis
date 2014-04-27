@@ -87,7 +87,7 @@ do
             ;;
         group)
 	        check   input "$2"
-	        db get  group "$2"
+	        db      group "$2"
 		    connect group "$server_list" "$action"
 		    shift
 	        ;;
@@ -98,8 +98,9 @@ do
 		    shift
 		    ;;
         server)
-			check input    "$2"
-			db get server  "$2" 
+            SERVER_ARG="$2"
+			check   input  "$SERVER_ARG"
+			db      server "$SERVER_ARG" 
 			connect server "$server_list" "$action"
 			shift
 			;;
@@ -108,7 +109,7 @@ do
 	        
 	        check input  "$2"
 		    check perm	 "$2"
-		    db get info	 "$2"
+		    db    info	 "$2"
 		    Print info   "$db_result" 
 		    ;;
         search)
@@ -119,7 +120,7 @@ do
 	        ;;
         login)
 	        check   input  "$2"
-	        db  get server "$2"
+	        db      server "$2"
 	        connect server "$server_login"
 	        ;;
         option)
