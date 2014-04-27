@@ -36,12 +36,18 @@ load metis:fun:check
 for args in "$@"
 do
     case $args in
+        but)
+            # test
+            ;;
         cmd)
             Commands="$2"
-            check input   "$Commands"
+            check input   "$Commans"
             #check syntax  "$command"
             #check command "$command"
             shift 1
+            ;;
+        except)
+            # test
             ;;
         file)
             filename="$2"
