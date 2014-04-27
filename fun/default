@@ -6,7 +6,7 @@ abort(){
 
 fun_server(){
     check input   "$1"
-    #db get server "$1"
+    db get       "$1"
     SERVPORT="22"
     SERVIPAD="192.168.1.123"
     SERVPATH="`echo $1 | awk -F ':' '{print $2}'`"

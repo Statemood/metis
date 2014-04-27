@@ -1,4 +1,5 @@
 #! /bin/bash
+<<<<<<< HEAD
 #echo -e "192.168.200.10 22 test-app-1"
 
 db(){
@@ -11,4 +12,23 @@ db(){
         add)
         edit)
         delete)
+=======
+
+db(){
+    if [ "$UID" = "0" ]
+    then
+        Extra_filter=""
+    else
+        Extra_filter="AND login_users LIKE '%$USER%'"
+    fi
+
+    case $1 in 
+        get)
+            $MYSQL_EXEC -e "set @myrow = 0;select (@myrow := @myrow + 1) as id,ctip,cuip,cmip,natip,port,hostname,login_users from $MYSQL_NAME.info_host where concat(ctip,cuip,cmip,natip,hostname) LIKE '%$Keywords%' IS NULL $Extra_filter AND(ctip LIKE '%$Keywords%' OR cuip LIKE '%$Keywords%' OR cmip LIKE '%$Keywords%' OR natip LIKE '%$Keywords%' OR hostname LIKE '%$Keywords%')" | sed '1d'
+            ;;
+ 
+        info)
+            ;;
+    esac
+>>>>>>> 4095480d0b51475b5d90c3b65c115ad07a8ba933
 }
