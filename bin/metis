@@ -3,7 +3,7 @@
 # ------------------------------------------
 #
 # Created by Statemood, 2014.01.14 17:30
-# Updated by Statemood, 2014.05.20 16:30
+# Updated by Statemood, 2014.09.09 18:30
 #            Statemood@gmail.com
 #
 # Project metis:
@@ -97,7 +97,7 @@ do
 		    Print info  "$db_result" 
 	        check input "$2"
 		    check perm  "$2"
-		    db info     "$2"
+		    db    info  "$2"
 		    Print info  "$db_result" 
 		    ;;
         search)
