@@ -10,7 +10,7 @@ check(){
             input)
                 if [ "X$2" = "X" ]
                 then
-                    log error "Error: No inout detected"
+                    log error "Error: No input detected"
                     abort
                 else
                     return 0

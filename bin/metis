@@ -21,6 +21,14 @@ load metis:fun:db
 #check login
 #check user
 
+# metis cmd  "w"            to 12.34            ( to default is arg server )
+#                           to group "project"
+#                           to group "project" except "host1, host2, host3"
+#       sned /tmp/i.gz      to 12.34:/data      ( default is '/data/recev' )
+#            /tmp/i.gz      to 12.34:/tmp from 56.78
+#       get  56.78:/tmp/ip.log /tmp             ( default is '/data/recev' )
+#       
+
 for args in "$@"
 do
     case $args in
@@ -29,7 +37,7 @@ do
             ;;
         cmd)
             Commands="$2"
-            check input   "$Commans"
+            check input   "$Commands"
             #check command "$command"
             shift 1
             ;;
@@ -37,7 +45,7 @@ do
             # test
             ;;
         file)
-            FileName="$2"
+            filename="$2"
             check input   "$filename"
             check file    "$filename"
             shift 2
@@ -61,8 +69,12 @@ do
 	        check accept "$2" "file|cmd"
             shift 1
 	        ;;
+        from)
+            FromTarget="$2"
+            check input "$FromTarget"
+            ;;
         to)
-            totarget="$2"
+            ToTarget="$2"
             echo "$totarget" | awk -F ':' '{print $1}' | grep -q "group"
             if [ $? = 0 ]
             then
