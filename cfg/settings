@@ -1,23 +1,17 @@
 #! /bin/bash
-# defined project name
+
 PROJECT=metis
 
-# defined version
 VERSION=2.1
 
-# defined Application home
 APPHOME="$(dirname $(dirname $0))"
 
-# defined Application name
 APPNAME=$(basename $0)
 
-# set log file size
 LOGSIZE=51200
 
-# set log file path
-LOGFILE=/data/log/$PROJECT/$PROJECT.log
+LOGFILE=/data/log/$PROJECT/$APPNAME.log
 
-# defined timed-out(sec)
 TIMEOUT=30
 
 # get real-username & IP
@@ -49,5 +43,4 @@ MYSQL_CONN='/usr/bin/mysql'
 MYSQL_EXEC="$MYSQL_CONN -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASS"
 
 # Backup settings
-Nginx_root_dir_list=$APPHOME/cfg/nginx_root_dir_list
-
+BACKUP_WEB_LIST=$APPHOME/cfg/backup.web.list

@@ -1,41 +1,21 @@
 #! /bin/bash
-log(){
-	# log level(error|warn|info) msg
-    test -z "$LOGFILE" && LOGFILE=$APPHOME/log/$APPNAME.log
-    
-    test -d "$(dirname $LOGFILE)" || mkdir "$(dirname $LOGFILE)"
-    
-    if [ -f $LOGFILE ]
-    then
-        logsize=`du $LOGFILE | awk '{print $1}'`
-    else
-        logsize=0
-    fi
 
-    if [ $LOGSIZE = $logsize ]
-    then
-        mv $LOGFILE $LOGFILE.`date +%F`
-        touch $LOGFILE
-        bzip2 $LOGFILE.`date +%F` > /dev/null 2>&1 &
-    fi
-#    logsize={`du $LOGFILE | awk '{print $1}'`:-0}
-    
-#    if [ $LOGSIZE = $logsize ]
-#    then
-#        mv $LOGFILE $LOGFILE.`date +%F`
-#        touch $LOGFILE
-#        bzip2 $LOGFILE.`date +%F` > /dev/null 2>&1 &
-#    fi
+app_home="$(dirname $(dirname $0))"
+ fun_log="$app_home/fun/log"
 
-    echo    "`date +'%F %T.%N'` $1 $USER($REALUSER:$REALTTYS:$REALIPAD): $2" >> $LOGFILE
-    echo -e "$2"
-}
+if [ -f "$fun_log" ]
+then
+    . $fun_log
+else
+    echo -e "\033[1;41mError:\033[0m Unable to load module $fun_log: File not found"
+    exit 1
+fi
 
 load(){
 	## load metis:cfg:settings
 	## load login from metis:bin:gt
 	
-    settings="$(dirname $(dirname $0))/cfg/settings"
+    settings="$app_home/cfg/settings"
 
     if [ -f $settings ]
     then

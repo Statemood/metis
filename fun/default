@@ -19,3 +19,9 @@ fun_server(){
         echo -e "Sending cmd '$Commands' to $SERVIPAD"
     fi
 }
+
+err(){
+    log  error "$1"
+    ftmp delete
+    exit 1
+}

@@ -11,6 +11,18 @@
 
 # Generic Backup program for Linux
 
+# Add at 2014-10-06 21:05
+#
+#   backup web all [commit "something..."]
+#   backup web app [commit "xxx"]
+#   backup web app
+#   backup web app status
+#                  ---- Print app info, check path and settings
+#
+#   backup web app last
+#                  ---- Print last backup of app file, time, size and commit info, etc..
+
+
 Rootdir="/data/www"
 Project=""
 
