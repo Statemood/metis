@@ -1,21 +1,21 @@
-fce(){
-    echo -en "\033[$1;$2m$3\033[0m"
-}
-
-clean(){
-    ftmp delete
-    echo -e "\nUser keyboard interrupt, exiting immediately..."
-    stty -cbreak echo 2> /dev/null
-    exit 1
+include(){
+    Includefile="/usr/local/`echo $1 | awk -F '.' '{print $1}'`/`echo $1 | awk -F '.' '{print $2}'`/$1" 
+    if [ -f "$Includefile" ]
+    then
+        . $Includefile
+    else
+        echo -e "\033[1;41mSerious Error\033[0m: $1 not found"
+        exit 1
+    fi 
 }
 
 ftmp(){
     case $1 in 
         create)
-            TEMPLIST=`mktemp $APPTEMP/XXXXXXXXXXXXXXXXXXXX`
+            TEMPLIST=`mktemp $APPSTEMP/XXXXXXXXXXXXXXXXXXXX`
             for Temps in `echo "$@" | awk -F 'create ' '{print $2}'`
             do 
-                echo "$Temps=`mktemp $APPTEMP/XXXXXXXXXXXXXXXXXXXX`" >> $TEMPLIST
+                echo "$Temps=`mktemp $APPSTEMP/XXXXXXXXXXXXXXXXXXXX`" >> $TEMPLIST
             done
             . $TEMPLIST
             ;;
@@ -34,9 +34,4 @@ ftmp(){
             fi 
             ;;
     esac
-}
-
-abort(){
-    ftmp delete
-    exit 1
 }

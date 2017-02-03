@@ -2,148 +2,187 @@
 
 # ------------------------------------------
 #
-# Created by Statemood, 2014.01.14 17:30
-# Updated by Statemood, 2014.09.09 18:30
+# Created by Statemood, 2012.10.26 11:16
+# Updated by Statemood, 2013.04.11 17:00
 #            Statemood@gmail.com
 #
 # Project metis:
-#   http://github.com/Statemood/metis-2.1
+#   http://github.com/Statemood/metis
 # ------------------------------------------
 
-. $(dirname $(dirname $0))/fun/load || exit 1
+. /usr/local/server/metis/bin/including	|| exit 1
 
-load metis:cfg:settings
-load metis:fun:default
-load metis:fun:check
-load metis:fun:db
+include metis.cfg.ge
+include metis.fun.ge
+include metis.fun.gt
+include metis.fun.check
 
-#check range time work
-#check login
-#check user
+ftmp  create keymatch usr_auth usr_chio mth_auth chk_auth srv_info cmd_temp cmd_list
 
-# metis cmd  "w"            to 12.34            ( to default is arg server )
-#                           to group "project"
-#                           to group "project" except "host1, host2, host3"
-#       sned /tmp/i.gz      to 12.34:/data      ( default is '/data/recev' )
-#            /tmp/i.gz      to 12.34:/tmp from 56.78
-#       get  56.78:/tmp/ip.log /tmp             ( default is '/data/recev' )
-#       
-
-for args in "$@"
+for argu in "$@"
 do
-    case $args in
-        but)
-            # test
-            ;;
-        cmd)
-            Commands="$2"
-            check input   "$Commands"
-            #check command "$command"
-            shift 1
-            ;;
-        except)
-            # test
-            ;;
-        file)
-            filename="$2"
-            check input   "$filename"
-            check file    "$filename"
-            shift 2
-            ;;
-        get)
-	        # get remote-file from server 10.1 save to local-path
-            check input  "$2"
-            server=`echo "$2" | awk -F ':' '{print $1}'`
-            source=`echo "$2" | awk -F ':' '{print $2}'`
-            saveto="$3"
-            check exist  $saveto
-            shift 
-            ;;
-        send)
-	        # send file local-file to server 10.1
-			#					   to group  dbs  except xx1,xx2,xx3
-	        # send cmd  "ls" 	   to server 10.1
-	        #					   to group  dbs
-            SendAction="$2"
-	        check input  "$2"
-	        check accept "$2" "file|cmd"
-            shift 1
-	        ;;
-        from)
-            FromTarget="$2"
-            check input "$FromTarget"
-            ;;
-        to)
-            ToTarget="$2"
-            echo "$totarget" | awk -F ':' '{print $1}' | grep -q "group"
-            if [ $? = 0 ]
+    case "$argu" in
+        -i|--info)
+            if [ "$UID" != "0" ]
             then
-                fun_group
-            else
-                fun_server "$totarget"
-            fi
+                echo -e  "\033[1;41mError\033[0m: Require root privileges: Permission denied"
+                log auth "Require root privileges: Permission denied (`pwd`:$0 $1 $2)"
+                ftmp delete
+                exit 1
+            fi 
+            ServerIP="$2"
+            gt_mg_exec
+            ftmp delete
+            ;;
+        -U|--user)
+            Username="$2"
+            Check user atusr $Username "Error: only root user can specifiy a user name"
             shift 2
             ;;
-        group)
-	        check   input "$2"
-	        db      group "$2"
-		    connect group "$server_list" "$action"
-		    shift
-	        ;;
-	    by)
-		    check input "$2"
-		    group_by="$2"
-		    shift
-		    ;;
-        server)
+        -o|--option)
+            UOPTIONS="$2"
+            log info "Option: $UOPTIONS: User $Username specified"
+            shift 2
+            ;;
+        -s|--specified)
             Keywords="$2"
-			check   input  "$SERVER_ARG"
-			db      server "$SERVER_ARG" 
-			connect server "$server_list" "$action"
-			shift
-			;;
-        info)
-	        check input "$2"
-		    check perm  "$2"
-		    db    info  "$2"
-		    Print info  "$db_result" 
-	        check input "$2"
-		    check perm  "$2"
-		    db    info  "$2"
-		    Print info  "$db_result" 
-		    ;;
-        search)
-	        check input  "$2"
-	        check empty  "$db_result"
-	        Print list   "$db_result"
-	        input rt 	 "userinput"
-	        ;;
-        login)
-	        check input    "$2"
-	        db    server   "$2"
-	        connect server "$server_login"
-	        ;;
-        option)
-	        check input  "$2"
-	        check option "$2"
-	        shift
-	        ;;
-        transfer)
-	        check input   "$2"
-	        check arg   2 "$2"
-	        source_host=
-	        source_file=
-	        destsv_host=
-	        destsv_file=
-	        db server "$source_host"
-	        db server "$destsv_host"
-	        transmission $source_host:$source_file $destsv_host:$destsv_file
-	        ;;        
-	    version)
-		    msg version metis
+            gt_getsrv
+            shift 2
             ;;
-        help)
-            msg help metis
+        -c|--cmd)
+            Commands="$2"
+            #Check cmd "$Commands"
+            echo     "Execcuting command '$Commands' on server $SERVIPAD"
+            log info "Execcuting command($Commands) on server $SERVIPAD(Keyword: $Keywords)"
+            ssh -p $SERVPORT $Username@$SERVIPAD "$Commands"
             ;;
-    esac
+        -u|--upload)
+            Uploadf="$2"
+            Uploads="`echo $3 | awk -F ':' '{print $1}'`"
+            Uploadr="`echo $3 | awk -F ':' '{print $2}'`"
+            Keywords="$Uploads"
+            Check file exist $Uploadf "Error: $Uploadf: No such file or directory"
+            gt_getsrv
+            log info "Start uploading $Uploadf to server $SERVIPAD(matched by $Uploads) save as $Uploadr"
+            echo -e  "Uploading $Uploadf to $SERVIPAD..."
+            scp $OPTION_R -P $SERVPORT $Uploadf $Username@$SERVIPAD:$Uploadr
+            ;;
+        -d|--download)
+            Dwloadl="$3"
+            Dwloads="`echo $2 | awk -F ':' '{print $1}'`"
+            Dwloadf="`echo $2 | awk -F ':' '{print $2}'`"
+            Keywords="$Dwloads"
+            gt_getsrv
+            log info "Downloading $Dwloadf from $SERVIPAD(matched by $Dwloads) save as $Dwloadl"
+            echo -e  "Downloading $Dwloadf from $SERVIPAD save to $Dwloadl..."
+            scp $OPTION_R -P $SERVPORT $Username@$SERVIPAD:$Dwloadf $Dwloadl
+            ;;
+        -t|--transfer)
+            Dwloadl="$Trantemp"
+            Dwloads="`echo $2 | awk -F ':' '{print $1}'`"
+            Dwloadf="`echo $2 | awk -F ':' '{print $2}'`"
+            Uploadf="$Trantemp/$(basename $Dwloadf)"
+            Uploads="`echo $3 | awk -F ':' '{print $1}'`"
+            Uploadr="`echo $3 | awk -F ':' '{print $2}'`"
+            Keywords="$Dwloads"
+            Check file create 1777 dir $Trantemp
+            echo -e "${FBold}Starting file transfer...${FRest}"
+            gt_getsrv
+			ftmp delete
+            echo -e  "Downloading $Dwloadf from $SERVIPAD..."
+            log info "File transfer: Downloading $Dwloadf from $SERVIPAD(matched by $Dwloads) save as $Uploadf"
+            scp $OPTION_R -P $SERVPORT $Username@$SERVIPAD:$Dwloadf $Dwloadl
+            Keywords="$Uploads"
+            Check file exist $Uploadf "Error: $Uploadf: No such file or directory"
+            gt_getsrv
+			ftmp delete
+            echo -e  "Uploading $Uploadf to $SERVIPAD..."
+            log info "File transfer: Uploading $Uploadf to $SERVIPAD(matched by $Uploads) save as $Uploadr"
+            scp $OPTION_R -P $SERVPORT $Uploadf $Username@$SERVIPAD:$Uploadr
+            Del_file $Uploadf
+            ;;
+        --List)
+            Keywords="$2"
+            gt_db_search
+            Check file empty $keymatch "Error: No results found"
+            gt_print_results
+            ;;
+
+        -l|--list)
+            Keywords="$2"
+            gt_db_search
+            Check file empty $keymatch "Error: No results found"
+            gt_print_results
+            python -c "print '-' * 30"
+            Rangenum="`cat $keymatch | sed '1d' | wc -l`"
+            if [ "$Rangenum" = 1 ]
+            then
+                usr_input=1
+                gt_srvinfo
+                ftmp delete
+                log info "Search $Keywords(ID $usr_input of $Rangenum: auto-identified) matched server:$SERVIPAD:$SERVPORT:$SERVNAME, auto-logging"
+                echo "$Keywords matched $SERVIPAD, auto connecting..."
+                ssh -p $SERVPORT $Username@$SERVIPAD
+                exit 0
+            fi 
+            echo -en  "$USER@metis: "
+            ifs=$IFS
+            IFS=
+            while true
+            do
+                USRINPUT="`RTInput`"
+                if [ x$USRINPUT = x ]
+                then
+                    echo
+                    break
+                fi
+                INPUTSTRING="$INPUTSTRING$USRINPUT"
+                printf "$USRINPUT"
+                if [ $USRINPUT = q ]
+                then
+                    echo -e "\nGoodbye!"
+                    ftmp delete
+                    exit 0
+                elif [ $USRINPUT = c ]
+                then
+                    echo -en "\n${c1}Command mode${c0}: "
+                    Readinput $GTINPUTMOUT Commands "timed out waiting for input: program terminated"
+                    Check input empty "$Commands" "Error: No input detected"
+                    #Check cmd "$Commands"
+                    sed '1d' $keymatch > $cmd_list
+                    echo -e "Attention: Command $c5$c1$c45$Commands$c0 will be execute on `wc -l $cmd_list | awk '{print $1}'` servers\n"
+                    Count=1
+                    while read line 
+                    do 
+                        echo "$line" > $cmd_temp
+                        usr_input=`echo $line | awk '{print $1}'`
+                        keymatch=$cmd_temp
+                        gt_srvinfo
+			            printf "%-4s%16s : %-6s Command: $Commands\n" "$Count" "$SERVIPAD" "$SERVPORT"
+                        ssh -p $SERVPORT $Username@$SERVIPAD "$Commands" &
+                        Count=`expr $Count + 1`
+                    done < $cmd_list
+                    ftmp delete
+                    exit 0
+                    break
+                else 
+                    check digit "$USRINPUT" 1 exit 1 "\nError: Please input ID or c to Command mode or q to quit"
+                fi 
+            done
+            IFS=$ifs
+            usr_input=$INPUTSTRING
+            Check input empty   "$usr_input"           "Error: No input detected"
+            check digit         "$usr_input" 1 exit 1  "Error: Number only"
+            Check input range   "$usr_input" $Rangenum "Error: Input out of range. Total: $Rangenum, Input: $usr_input"
+            gt_srvinfo
+            ftmp delete
+	        echo -e "\n${FBold}Connecting to \033[34m$SERVIPAD\033[0m($SERVNAME)..."
+	        log info "Search $Keywords(ID $usr_input of $Rangenum: user-input) matched server:$SERVIPAD:$SERVPORT:$SERVNAME, logging"
+            ssh -p $SERVPORT $Username@$SERVIPAD
+            ;;
+        -h|--help)
+            echo "help msg"
+            ftmp delete
+            ;;
+    esac 
 done

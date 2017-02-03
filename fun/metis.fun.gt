@@ -157,7 +157,7 @@ gt_srvinfo(){
     else
         MATCHCOL="`cat $usr_chio | Stringmthcol $Keywords | head -1`"
     fi
-    if [ "$MATCHCOL" -gt 1 -a "$MATCHCOL" -lt 6 ]
+    if [ "$MATCHCOL" -gt 1 ] && [ "$MATCHCOL" -lt 6 ]
     then
         true
     else
@@ -176,17 +176,6 @@ gt_srvinfo(){
     SERVIPAD="`awk '{print $'$MATCHCOL'}' $usr_chio | head -1`"
     SERVPORT="`awk '{print $7}' $usr_chio | head -1`"
     SERVNAME="`awk '{print $6}' $usr_chio | head -1`"
-
-    echo $SERVIPAD | egrep -q '^192.168|^10.|^172.16'
-    if [ $? = 0 ]
-    then
-        SERVIPAD="`awk '{print $2}' $usr_chio | head -1`"
-        if [ "$SERVIPAD" = "NULL" ]
-        then
-            SERVIPAD="`awk '{print $5}' $usr_chio | head -1`"
-        fi
-    fi 
-
     Del_file $keymatch $usr_chio
 }
 gt_getsrv(){
