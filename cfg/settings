@@ -19,6 +19,7 @@ REALUSER=`who am i | awk '{print $1}'`
 REALTTYS=`who am i | awk '{print $2}'`
 REALIPAD=`who am i | awk -F '(' '{print $2}' | awk -F ')' '{print $1}'`
 
+
 if [ "$REALIPAD" = ":0.0" ] || [ "$REALIPAD" = ":0" ]
 then
     REALIPAD="127.0.0.1"
